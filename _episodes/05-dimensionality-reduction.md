@@ -18,123 +18,93 @@ keypoints:
 
 # Dimensionality Reduction
 
-Dimensionality reduction is the process of using a subset of the coordinates, 
-which may be transformed, of the dataset to capture the variation in features 
-of the data set.  It can be a helpful pre-processing step before doing other 
-operations on the data, such as classification, regression or visualization.
-
-## Dimensionality Reduction with Scikit-learn
-
-First setup our environment and load the MNIST digits dataset which will be used 
-as our initial example.
-
-~~~
-import numpy as np
-import matplotlib.pyplot as plt
-
-from sklearn import decomposition
-from sklearn import datasets
-from sklearn import manifold
-
-digits = datasets.load_digits()
+Dimensionality reduction serves as a potent technique for analysing and visualising data sets, especially when dealing with high-dimensional data such as datasets or outputs from machine learning models. These methods effectively reduce the number of features in your data, which is crucial considering that visualising anything beyond two dimensions is challenging. For this section we will focus on two commonly used methods for dimensionally reducing your data, One being Principal Component analysis (PCA) a linear method and second t-SNE a non-parametric/ non-linear method. 
 
 # Examine the dataset
-print(digits.data)
-print(digits.target)
-
-X = digits.data
-y = digits.target
+Lets make some plots looking at each of our features, so we can see the distribution of our features.
 ~~~
-{: .language-python}
+par(mfrow = c(2, 2))
+hist(iris$Sepal.Length, breaks = 20)
+hist(iris$Sepal.Width, breaks = 20)
+hist(iris$Petal.Length, breaks = 20)
+hist(iris$Petal.Width, breaks = 20)
+~~~
+{: .language-r}
+
+>![graph of the test regression data](../fig/iris_histograms.png)
+{: .output}
 
 ### Principle Component Analysis (PCA)
 
-PCA is a technique that does rotations of data in a two dimensional
-array to decompose the array into combinations vectors that are orthogonal
-and can be ordered according to the amount of information they carry.
+PCA is a technique that does rotations of data in a two dimensional array to decompose the array into combinations vectors that are orthogonal and can be ordered according to the amount of information they carry. As there are as many principal components as there are variables in the data, principal components are constructed in such a manner that the first principal component accounts for the largest possible variance in the data set. Hence, when you condense your data into two dimensions, you're essentially utilising the two principal components characterised by the highest variance.
 
 ~~~
 # PCA
-pca = decomposition.PCA(n_components=2)
-pca.fit(X)
-X_pca = pca.transform(X)
-
-fig = plt.figure(1, figsize=(4, 4))
-plt.clf()
-plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap=plt.cm.nipy_spectral, 
-        edgecolor='k',label=y)
-plt.colorbar(boundaries=np.arange(11)-0.5).set_ticks(np.arange(10))
-plt.savefig("pca.svg")
+pc <- prcomp(iris[,-5],center = T,scale. = T)
+pc
+summary(pc)
 ~~~
-{: .language-python}
+{: .language-r}
 
-![Reduction using PCA](../fig/pca.svg)
+><pre style="color: black; background: white;">
+>Standard deviations (1, .., p=4):
+>[1] 1.7083611 0.9560494 0.3830886 0.1439265
+>
+>Rotation (n x k) = (4 x 4):
+>                    PC1         PC2        PC3        PC4
+>Sepal.Length  0.5210659 -0.37741762  0.7195664  0.2612863
+>Sepal.Width  -0.2693474 -0.92329566 -0.2443818 -0.1235096
+>Petal.Length  0.5804131 -0.02449161 -0.1421264 -0.8014492
+>Petal.Width   0.5648565 -0.06694199 -0.6342727  0.5235971
+>
+>Importance of components:
+                          PC1    PC2     PC3     PC4
+>Standard deviation     1.7084 0.9560 0.38309 0.14393
+>Proportion of Variance 0.7296 0.2285 0.03669 0.00518
+>Cumulative Proportion  0.7296 0.9581 0.99482 1.00000
+></pre>
+{: .output}
+
+Now lets visualise our reduced features:
+
+
+~~~
+library(ggbiplot)
+g <- ggbiplot(pc,obs.scale = 1, var.scale = 1, groups = iris$Species)
+~~~
+{: .language-r}
+
+>![graph of the test regression data](../fig/PCA_CHART.png)
+{: .output}
 
 ### t-distributed Stochastic Neighbor Embedding (t-SNE)
-
+t-SNE is a statistical approach used to visually represent high-dimensional data by assigning each data point a position on a two- or three-dimensional map. Unlike linear techniques, t-SNE is nonlinear and is particularly effective for reducing the dimensionality of data to enable visualization in a lower-dimensional space. It accomplishes this by modeling each high-dimensional object as a point in two or three dimensions, ensuring that similar objects are positioned close together while dissimilar ones are placed farther apart with high probability.
 ~~~
 # t-SNE embedding
-tsne = manifold.TSNE(n_components=2, init='pca',
-        random_state = 0)
-X_tsne = tsne.fit_transform(X)
-fig = plt.figure(1, figsize=(4, 4))
-plt.clf()
-plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, cmap=plt.cm.nipy_spectral,
-        edgecolor='k',label=y)
-plt.colorbar(boundaries=np.arange(11)-0.5).set_ticks(np.arange(10))
-plt.savefig("tsne.svg")
+library(tsne)
+features <- subset(iris, select = -c(Species)) 
+set.seed(0)
+tsne <- tsne(features, initial_dims = 2)
+tsne <- data.frame(tsne)
+pdb <- cbind(tsne,iris$Species)
+summary(tsne)
 ~~~
-{: .language-python}
+{: .language-r}
 
-![Reduction using t-SNE](../fig/tsne.svg)
+><pre style="color: black; background: white;">
+>       X1                X2           
+> Min.   :-16.857   Min.   :-5.276300  
+> 1st Qu.:-10.994   1st Qu.:-2.199154  
+> Median : -2.691   Median : 0.009581  
+> Mean   :  0.000   Mean   : 0.000000  
+> 3rd Qu.: 12.147   3rd Qu.: 2.051889  
+> Max.   : 20.724   Max.   : 5.731033 
+></pre>
+{: .output}
 
+>![graph of the test regression data](../fig/tsne_clusters.png)
+{: .output}
 
-
-> ## Exercise: Working in three dimensions
-> The above example has considered only two dimensions since humans
-> can visualize two dimensions very well. However, there can be cases
-> where a dataset requires more than two dimensions to be appropriately
-> decomposed. Modify the above programs to use three dimensions and 
-> create appropriate plots.
-> Do three dimensions allow one to better distinguish between the digits?
->
-> > ## Solution
-> > ~~~
-> > from mpl_toolkits.mplot3d import Axes3D
-> > # PCA
-> > pca = decomposition.PCA(n_components=3)
-> > pca.fit(X)
-> > X_pca = pca.transform(X)
-> > fig = plt.figure(1, figsize=(4, 4))
-> > plt.clf()
-> > ax = fig.add_subplot(projection='3d')
-> > ax.scatter(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], c=y,
-> >           cmap=plt.cm.nipy_spectral, s=9, lw=0)
-> > plt.savefig("pca_3d.svg")
-> > ~~~
-> > {: .language-python}
-> >
-> > ![Reduction to 3 components using pca](../fig/pca_3d.svg)
-> >
-> > ~~~
-> > # t-SNE embedding
-> > tsne = manifold.TSNE(n_components=3, init='pca',
-> >         random_state = 0)
-> > X_tsne = tsne.fit_transform(X)
-> > fig = plt.figure(1, figsize=(4, 4))
-> > plt.clf()
-> > ax = fig.add_subplot(projection='3d')
-> > ax.scatter(X_tsne[:, 0], X_tsne[:, 1], X_tsne[:, 2], c=y,
-> >           cmap=plt.cm.nipy_spectral, s=9, lw=0)
-> > plt.savefig("tsne_3d.svg")
-> > ~~~
-> > {: .language-python}
-> >
-> > ![Reduction to 3 components using tsne](../fig/tsne_3d.svg)
-> >
-> >
-> {: .solution}
-{: .challenge}
 
 > ## Exercise: Parameters
 >
