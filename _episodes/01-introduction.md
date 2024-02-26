@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "Introduction to machine learning"
 teaching: 30
 exercises: 10
 questions:

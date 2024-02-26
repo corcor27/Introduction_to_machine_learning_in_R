@@ -1,5 +1,5 @@
 ---
-title: "Dimensionality Reduction"
+title: "Dimensional Reduction"
 teaching: 0
 exercises: 0
 questions:
