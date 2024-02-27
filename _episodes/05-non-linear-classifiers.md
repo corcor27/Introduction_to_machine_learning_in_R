@@ -33,27 +33,53 @@ test = subset(iris, split==FALSE)
 
 train_scaled = scale(train[-5])
 test_scaled = scale(test[-5])
+train_scaled
 ~~~
 {: .language-r}
+
+><pre style="color: black; background: white;">
+>Sepal.Length  Sepal.Width Petal.Length  Petal.Width       setosa    virginica   versicolor 
+>   5.8522124    3.0663717    3.6734513    1.1513274    0.3628319    0.3362832    0.3008850 
+>attr(,"scaled:scale")
+>Sepal.Length  Sepal.Width Petal.Length  Petal.Width       setosa    virginica   versicolor 
+>   0.8523180    0.4524952    1.8304477    0.7617080    0.4829586    0.4745415    0.4606857 
+></pre>
+{: .output}
 
 ~~~
 library(class)
-test_pred <- knn(train = train_scaled, test = test_scaled,cl = train$Species, k=10)
-
+test_pred <- knn(train = train_scaled, test = test_scaled,cl = train$Species, k=3)
+test_pred
 ~~~
 {: .language-r}
+
+><pre style="color: black; background: white;">
+> [1] setosa     setosa     setosa     setosa     setosa     setosa     setosa     setosa     setosa     versicolor versicolor
+>[12] versicolor versicolor versicolor versicolor versicolor versicolor versicolor versicolor versicolor versicolor versicolor
+>[23] versicolor versicolor versicolor virginica  virginica  virginica  virginica  virginica  virginica  virginica  virginica 
+>[34] virginica  virginica  virginica  virginica 
+>Levels: setosa versicolor virginica
+></pre>
+{: .output}
 
 ~~~
 actual <- test$Species
 cm <- table(actual,test_pred)
 accuracy <- sum(diag(cm))/length(actual)
 sprintf("Accuracy: %.f%%", accuracy*100)
+cm
 ~~~
 {: .language-r}
+
+~~~
+"Accuracy: 100%"
+~~~
+{: .output}
 
 ## Support Vector Machines (KNN)
 
 ~~~
+library(e1071)
 svm_model <- svm(Species ~ ., data=train_scaled, kernel="linear") #linear/polynomial/sigmoid
 
 ~~~

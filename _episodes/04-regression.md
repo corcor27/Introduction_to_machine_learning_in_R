@@ -33,23 +33,36 @@ head(X)
 {: .language-r}
 
 ~~~
-xycorr<- cor(Y,X, method="pearson") # find pearson correlation coefficient
-xycorr # a value near 1 implies high correlation and that near 0 shows low correlation
+Y<- iris[,"Sepal.Width"] # select Target attribute
+X<- iris[,"Sepal.Length"] # select Predictor attribute
+head(X)
 ~~~
 {: .language-r}
 
 ~~~
-plot(Y~X, col=X)
+[1] 5.1 4.9 4.7 4.6 5.0 5.4
+~~~
+{: .output}
+
+~~~
+plot(Y~X, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data")
+legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
+
+~~~
+{: .language-r}
+>![graph of the test regression data](../fig/iris_sepal.png)
+{: .output}
+~~~
 model1<- lm(Y~X)
 model1 # provides regression line coefficients i.e. slope and y-intercept
+plot(Y~X, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data")
+legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
+abline(model1, col="black", lwd=3) # add regression line to scatter plot to see relationship between X and Y
 ~~~
 {: .language-r}
 
-~~~
-plot(Y~X, col=X) # scatter plot between X and Y
-abline(model1, col="blue", lwd=3) # add regression line to scatter plot to see relationship between X and Y
-~~~
-{: .language-r}
+>![graph of the test regression data](../fig/iris_y_intercept.png)
+{: .output}
 
 ### Testing the accuracy of a linear regression model
 
@@ -59,11 +72,13 @@ Now, let’s use the line coefficients for two equations that we got in model1 a
 # Prediction of 'Sepal.Width' when 'Sepal.Length'= 20
 p1<- predict(model1,data.frame("X"=20))
 p1
-# Prediction of 'Petal.Width' when 'Petal.Length'= 15
-p2<- predict(model2,data.frame("V"=15))
-p2
+
 ~~~
-{: .language-python}
+       1 
+2.181251 
+~~~
+{: .output}
+
 
 
 > ## Comparing the logarithmic and non-logarithmic graphs
