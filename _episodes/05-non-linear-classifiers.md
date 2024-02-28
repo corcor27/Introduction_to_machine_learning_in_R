@@ -48,7 +48,7 @@ train_scaled
 
 ~~~
 library(class)
-test_pred <- knn(train = train_scaled, test = test_scaled,cl = train$Species, k=3)
+test_pred <- knn(train = train_scaled, test = test_scaled,cl = train$Species, k=2)
 test_pred
 ~~~
 {: .language-r}
@@ -65,14 +65,21 @@ test_pred
 ~~~
 actual <- test$Species
 cm <- table(actual,test_pred)
+cm
 accuracy <- sum(diag(cm))/length(actual)
 sprintf("Accuracy: %.f%%", accuracy*100)
-cm
+
 ~~~
 {: .language-r}
 
 ~~~
-"Accuracy: 100%"
+"Accuracy: 92%"
+
+           test_pred
+actual       setosa versicolor virginica
+setosa          9          0         0
+versicolor      0         16         0
+virginica       0          3         9
 ~~~
 {: .output}
 
@@ -80,20 +87,31 @@ cm
 
 ~~~
 library(e1071)
+Species <- train$Species
 svm_model <- svm(Species ~ ., data=train_scaled, kernel="linear") #linear/polynomial/sigmoid
-
-~~~
-pred = predict(svm_model,iris)
-tab = table(Predicted=pred, Actual = iris$Species)
-tab
 ~~~
 {: .language-r}
 
+~~~
 pred = predict(svm_model,test_scaled)
-tab = table(Predicted=pred, Actual = iris$Species)
+tab = table(Predicted=pred, Actual = test$Species)
 tab
+accuracy <- sum(diag(tab))/length(test$Species)
+> sprintf("Accuracy: %.f%%", accuracy*100)
 ~~~
 {: .language-r}
+~~~
+"Accuracy: 92%"
+
+            Actual
+Predicted    setosa versicolor virginica
+setosa          9          0         0
+versicolor      0         16         3
+virginica       0          0         9
+~~~
+{: .output}
+
+
 
 > ## Exercise: Comparing linear and polynomial models
 > Train a linear and polynomial model on life expectancy data from China between 1960 and 2000. Then predict life expectancy from 2001 to 2016 using both methods. Compare their root mean squared errors, which is more accurate? Why do you think this model is the more accurate one?

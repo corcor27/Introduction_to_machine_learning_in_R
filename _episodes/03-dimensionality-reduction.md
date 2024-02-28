@@ -9,7 +9,7 @@ objectives:
 - "Understand that reducing the number of dimensions can simplify modelling and allow classifications to be performed."
 - "Recall that PCA is a popular technique for dimensionality reduction."
 - "Recall that t-SNE is another technique for dimensionality reduction."
-- "Apply PCA and t-SNE with Scikit Learn to an example dataset."
+
 - "Evaluate the relative peformance of PCA and t-SNE."
 keypoints:
 - "PCA is a linear dimensionality reduction technique for tabular data"
@@ -79,6 +79,8 @@ g <- ggbiplot(pc,obs.scale = 1, var.scale = 1, groups = iris$Species)
 
 ### t-distributed Stochastic Neighbor Embedding (t-SNE)
 t-SNE is a statistical approach used to visually represent high-dimensional data by assigning each data point a position on a two- or three-dimensional map. Unlike linear techniques, t-SNE is nonlinear and is particularly effective for reducing the dimensionality of data to enable visualization in a lower-dimensional space. It accomplishes this by modeling each high-dimensional object as a point in two or three dimensions, ensuring that similar objects are positioned close together while dissimilar ones are placed farther apart with high probability.
+
+
 ~~~
 # t-SNE embedding
 library(tsne)
@@ -101,6 +103,12 @@ summary(tsne)
 > Max.   : 20.724   Max.   : 5.731033 
 ></pre>
 {: .output}
+
+~~~
+plot(tsne, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data")
+legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
+~~~
+{: .language-r}
 
 >![graph of the test regression data](../fig/tsne_clusters.png)
 {: .output}
