@@ -23,63 +23,85 @@ We now possess a basic linear model for a given dataset. It would be valuable to
 
 ## Preprocess the dataset
 
-Lets test our code by using the example data from the mathsisfun link above.
-
+Any easy way to calculate our intercepts is to use least squares fit. 
 ~~~
-Y<- iris[,"Sepal.Width"] # select Target attribute
-X<- iris[,"Sepal.Length"] # select Predictor attribute
-head(X)
+lsfit(iris$Petal.Length, iris$Petal.Width)$coefficients
 ~~~
 {: .language-r}
-
 ~~~
-Y<- iris[,"Sepal.Width"] # select Target attribute
-X<- iris[,"Sepal.Length"] # select Predictor attribute
-head(X)
-~~~
-{: .language-r}
-
-~~~
-[1] 5.1 4.9 4.7 4.6 5.0 5.4
+Intercept X
+-0.3630755 0.4157554 .4
 ~~~
 {: .output}
 
+So now we have our intercepts, lets plot our line of best fit to our data.
 ~~~
-plot(Y~X, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data")
+plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Edgar Anderson's Iris Data", xlab="Petal length", ylab="Petal width")
+abline(lsfit(iris$Petal.Length, iris$Petal.Width)$coefficients, col="black")
 legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
-
 ~~~
 {: .language-r}
->![graph of the test regression data](../fig/iris_sepal.png)
+
+>![graph of the test regression data](../fig/petal_l_w.png)
 {: .output}
+
+So lets now have ago at building a linear model instead using "lm"
 ~~~
-model1<- lm(Y~X)
-model1 # provides regression line coefficients i.e. slope and y-intercept
-plot(Y~X, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data")
+lm(Petal.Width ~ Petal.Length, data=iris)$coefficients
+~~~
+{: .language-r}
+
+~~~
+(Intercept) Petal.Length
+-0.3630755 0.4157554 
+~~~
+{: .output}
+
+Again lets plot our linear model
+
+~~~
+plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Edgar Anderson's Iris Data", xlab="Petal length", ylab="Petal width")
+abline(lm(Petal.Width ~ Petal.Length, data=iris)$coefficients, col="black")
 legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
-abline(model1, col="black", lwd=3) # add regression line to scatter plot to see relationship between X and Y
 ~~~
 {: .language-r}
 
->![graph of the test regression data](../fig/iris_y_intercept.png)
+>![graph of the test regression data](../fig/petal_l_w.png)
 {: .output}
 
-### Testing the accuracy of a linear regression model
-
-Now, let’s use the line coefficients for two equations that we got in model1 and model2 to predict value of Target for any given value of Predictor.
+We can also look at how well our linear model fits the data by examining the p values.
 
 ~~~
-# Prediction of 'Sepal.Width' when 'Sepal.Length'= 20
-p1<- predict(model1,data.frame("X"=20))
-p1
-
+summary(lm(Petal.Width ~ Petal.Length, data=iris))
 ~~~
 {: .language-r}
+
 ~~~
-       1 
-2.181251 
+Call:
+lm(formula = Petal.Width ~ Petal.Length, data = iris)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.56515 -0.12358 -0.01898  0.13288  0.64272 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -0.363076   0.039762  -9.131  4.7e-16 ***
+Petal.Length  0.415755   0.009582  43.387  < 2e-16 ***
+
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.2065 on 148 degrees of freedom
+Multiple R-squared:  0.9271,	Adjusted R-squared:  0.9266 
+F-statistic:  1882 on 1 and 148 DF,  p-value: < 2.2e-16
 ~~~
 {: .output}
+
+> ## Try different features
+>
+> Have ago at using the same code and trying with sepal instead of petal, or any combination.
+>
+{: .challenge}
 
 # Logistic Regression
 We’ve now seen how we can use linear regression to make a simple model and use that to predict values, but what do we do when the relationship between the data isn’t linear?
@@ -97,6 +119,8 @@ We’ve now seen how we can use linear regression to make a simple model and use
 > ```
 > If you need more help on logarithms see the [Khan Academy's page](https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/introduction-to-logarithms/a/intro-to-logarithms)
 {: .callout}
+
+This time instead of focusing on plotting, were going to use logistic regression as a classifier. First we need to prepossess our data set by splitting it into training and test data. Then we will apply logistic regression using the binomial family using the sepal length feature.
 
 ~~~
 library(caTools)
@@ -136,7 +160,7 @@ summary(glfit)
 ></pre>
 {: .output}
 
-
+So we have now created our model and we want to predict some of the samples in our test set.
 ~~~
 newdata<- data.frame(x=test$Sepal.Length)
 predicted_val<-predict(glfit, newdata, type="response")
@@ -187,6 +211,8 @@ prediction
 ></pre>
 {: .output}
 
+Looking at our results, the prediction val column give thew prediction confidence that said belongs to that class. typically in machine learning we use the 0.5 confidence threshold. Now lest have a look at what our chat looks like.
+
 ~~~
 qplot(prediction[,1], round(prediction[,3]), col=prediction[,2], xlab = 'Sepal Length', ylab = 'Prediction using Logistic Reg.')
 ~~~
@@ -194,19 +220,13 @@ qplot(prediction[,1], round(prediction[,3]), col=prediction[,2], xlab = 'Sepal L
 
 >![graph of the test regression data](../fig/logethrimic_chart.png)
 {: .output}
-> ## Comparing the logarithmic and non-logarithmic graphs
+
+> ## trying different features
 >
-> Convert the code above to plot the logarithmic version of the graph.
-> Save the graph.
-> Now change back to the non-logarithmic version.
-> Compare the two graphs, which one do you think is easier to read?
+> Again have ago at using different features to see what changes in the prediction.
+>
 {: .challenge}
 
 
-> ## Removing outliers from the data
-> The correlation of GDP and life expectancy has a few big outliers that are probably increasing the error rate on this model. These are typically countries with very high GDP and sometimes not very high life expectancy. These tend to be either small countries with artificially high GDPs such as Monaco and Luxemborg or oil rich countries such as Qatar or Brunei. Kuwait, Qatar and Brunei have already been removed from this data set, but are available in the file worldbank-gdp-outliers.csv. Try experimenting with adding and removing some of these high income countries to see what effect it has on your model's error rate.
-> Do you think its a good idea to remove these outliers from your model?
-> How might you do this automatically?
-{: .challenge}
 
 {% include links.md %}

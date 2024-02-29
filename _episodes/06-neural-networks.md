@@ -212,4 +212,13 @@ Google, Microsoft, Amazon, and many others now have Cloud based Application Prog
 > Does it do any better/worse than Google?
 {: .challenge}
 
+### Existing API's of machine learning models
+
+A vast collection of deep learning machine models can be found on the platform known as Hugging Face. Serving as an AI community hub, it offers a diverse array of pre-trained, cutting-edge machine learning models accessible to all users.
+
+> ## Exercise: Existing API's of machine learning models
+> go to https://huggingface.co/ and have ago at some of the different models, alot of them have inference API so you can have ago on the website. 
+>
+{: .challenge}
+
 {% include links.md %}
