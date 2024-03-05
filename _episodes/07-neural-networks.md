@@ -143,62 +143,7 @@ sprintf("Accuracy: %.f%%", accuracy*100)
 > There are a number of characteristics you can change in your model, that may increase or decrease the performance of your model. have ago at adjusting the number of steps, linear output ("T" or "F") and number of hidden layers.
 {: .challenge}
 
-## Statistical test Manova
 
-Its important to use a statistical test when you are trying to prove that your model is obtaining an improved performance over a different model. As a statistical test is a procedure for deciding whether an assertion (e. g. a hypothesis) about a quantitative feature of a population is true or false. We test a hypothesis of this sort by comparing the populations/predictions from each of the models. There are a lot of statistical test that exist, which all have particular use cases. Therefore, it is important to do your research before deciding on a particular test that you want to use. for this examples we are going to use manova, which is useful for finding statistical different between a group of two or more models. 
-
-So lets run a manova, to see if there is any statistical difference. Firstly lets run it on our dataset:
-
-~~~
-sepl <- iris$Sepal.Length
-petl <- iris$Petal.Length
-res.man <- manova(cbind(Sepal.Length, Petal.Length) ~ Species, data = iris)
-summary(res.man)
-summary.aov(res.man)
-~~~
-{: .language-r}
-
-><pre style="color: black; background: white;">
->           Df Pillai approx F num Df den Df    Pr(>F)    
->Species     2 0.9885   71.829      4    294 < 2.2e-16 ***
->Residuals 147                                            
->Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
->
-> Response Sepal.Length :
->             Df Sum Sq Mean Sq F value    Pr(>F)    
->Species       2 63.212  31.606  119.26 < 2.2e-16 ***
->Residuals   147 38.956   0.265                      
->
->Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
->
-> Response Petal.Length :
->             Df Sum Sq Mean Sq F value    Pr(>F)    
->Species       2 437.10 218.551  1180.2 < 2.2e-16 ***
->Residuals   147  27.22   0.185                      
->
->Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
->
-></pre>
-{: .output}
-
-So we may not have multiple models to test, but luckily every iteration that our model ran gives us a results. so what we can do is compare the iterations to see which one was the best
-
-~~~
-data_frm <- data.frame(iris.prediction)
-data_frm$Species = iris.valid$Species
-res.man <- manova(cbind(data_frm$net.result.1, data_frm$net.result.2, data_frm$net.result.3) ~ Species, data = data_frm)
-summary(res.man)
-~~~
-{: .language-r}
-
-><pre style="color: black; background: white;">
->          Df Pillai approx F num Df den Df    Pr(>F)    
->Species    2 1.7747   186.43      6    142 < 2.2e-16 ***
->Residuals 72                                            
->
->Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-></pre>
-{: .output}
 
 ### Cloud APIs
 
