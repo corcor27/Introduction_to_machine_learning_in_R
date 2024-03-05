@@ -70,7 +70,7 @@ Now lets visualise our reduced features:
 
 ~~~
 library(ggbiplot)
-g <- ggbiplot(pc,obs.scale = 1, var.scale = 1, groups = iris$Species)
+ggbiplot(pc,obs.scale = 1, var.scale = 1, groups = iris$Species)
 ~~~
 {: .language-r}
 
