@@ -47,7 +47,8 @@ legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue"))
 
 So lets now have ago at building a linear model instead using "lm"
 ~~~
-lm(Petal.Width ~ Petal.Length, data=iris)$coefficients
+lm_fit <- lm(Petal.Width ~ Petal.Length, data=iris)
+lm_fit$coefficients
 ~~~
 {: .language-r}
 
@@ -69,10 +70,12 @@ legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue"))
 >![graph of the test regression data](../fig/petal_l_w.png)
 {: .output}
 
-We can also look at how well our linear model fits the data by examining the p values.
+We can also look at how well our linear model fits the data by examining the p values and also have our model predict values for Petal width.
 
 ~~~
 summary(lm(Petal.Width ~ Petal.Length, data=iris))
+newdata = data.frame(Petal.Length=c(2,3,5))
+predict(lm_fit, newdata)
 ~~~
 {: .language-r}
 
@@ -94,6 +97,11 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 Residual standard error: 0.2065 on 148 degrees of freedom
 Multiple R-squared:  0.9271,	Adjusted R-squared:  0.9266 
 F-statistic:  1882 on 1 and 148 DF,  p-value: < 2.2e-16
+
+Prediction Results
+
+        1         2         3 
+0.4684353 0.8841907 1.7157016 
 ~~~
 {: .output}
 
