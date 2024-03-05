@@ -82,14 +82,8 @@ irisCluster
 Now lets have a look at the 3 clusters the model has come up with. To do this we use a library called “cluster”, so we can see the regions/groups that the points have been separated into.
 
 ~~~
-library(ggplot2)
- 
-### Visualizing the clusters with species names
-ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Cluster, label = Species)) +
-  geom_point() +
-  geom_text(check_overlap = TRUE, vjust = 1.5) +
-  labs(title = "Spectral Clustering of Iris Dataset",
-       x = "Sepal Length", y = "Sepal Width")
+library(cluster)
+clusplot(iris, irisCluster$cluster, color=T, shade=T, labels=0, lines=0)
 ~~~
 {: .language-r}
 
