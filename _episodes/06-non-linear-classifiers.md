@@ -23,16 +23,15 @@ Before we train any non-linear machine learning models, we need to divide our da
 Furthermore, traditionally machine learning models only accept inputs which are between zero and one. so we will also need to scale our data.  
 
 ~~~
-library(caTools)
+> library(caTools)
 
-set.seed(1)
-split = sample.split(iris$Sepal.Length, SplitRatio = 0.75)
-train = subset(iris, split==TRUE)
-test = subset(iris, split==FALSE)
-
-train_scaled = scale(train[-5])
-test_scaled = scale(test[-5])
-train_scaled
+> set.seed(1)
+> split = sample.split(iris$Sepal.Length, SplitRatio = 0.75)
+> train = subset(iris, split==TRUE)
+> test = subset(iris, split==FALSE)
+> train_scaled = scale(train[-5])
+> test_scaled = scale(test[-5])
+> train_scaled
 ~~~
 {: .language-r}
 
@@ -48,9 +47,9 @@ train_scaled
 Now lets build our self KNN model, which we use a library called class.
 
 ~~~
-library(class)
-test_pred <- knn(train = train_scaled, test = test_scaled,cl = train$Species, k=2)
-test_pred
+> library(class)
+> test_pred <- knn(train = train_scaled, test = test_scaled,cl = train$Species, k=2)
+> test_pred
 ~~~
 {: .language-r}
 
@@ -68,11 +67,11 @@ test_pred
 To look at how our model performed, there are a number of ways you could look at it. The best way is to have look at the confusion matrix and luckily in R there is a built in function that does this for us. All we have to do is pass our prediction results to the table function. Furthermore, by summing the diagonal and dividing by the length of our test set we can come up with an accuracy value. 
 
 ~~~
-actual <- test$Species
-cm <- table(actual,test_pred)
-cm
-accuracy <- sum(diag(cm))/length(actual)
-sprintf("Accuracy: %.f%%", accuracy*100)
+> actual <- test$Species
+> cm <- table(actual,test_pred)
+> cm
+> accuracy <- sum(diag(cm))/length(actual)
+> sprintf("Accuracy: %.f%%", accuracy*100)
 
 ~~~
 {: .language-r}
@@ -111,19 +110,19 @@ The Support Vector Machine (SVM) emerges as a formidable supervised algorithm, d
 So to create a SVM model, we are going to use the library called "e1071". We are also going to use our train/test separations from above.
 
 ~~~
-library(e1071)
-Species <- train$Species
-svm_model <- svm(Species ~ ., data=train_scaled, kernel="linear") #linear/polynomial/sigmoid
+> library(e1071)
+> Species <- train$Species
+> svm_model <- svm(Species ~ ., data=train_scaled, kernel="linear") #linear/polynomial/sigmoid
 ~~~
 {: .language-r}
 
 Now lets have ago at predicting our test set using the SVM model. Again we are going to produce a confusion matrix and generate an accuracy score.
 
 ~~~
-pred = predict(svm_model,test_scaled)
-tab = table(Predicted=pred, Actual = test$Species)
-tab
-accuracy <- sum(diag(tab))/length(test$Species)
+> pred = predict(svm_model,test_scaled)
+> tab = table(Predicted=pred, Actual = test$Species)
+> tab
+> accuracy <- sum(diag(tab))/length(test$Species)
 > sprintf("Accuracy: %.f%%", accuracy*100)
 ~~~
 {: .language-r}

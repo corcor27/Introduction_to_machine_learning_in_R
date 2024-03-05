@@ -74,23 +74,23 @@ We're preparing to construct a multi-layer perceptron to predict species in the 
 Before delving into the construction, let's organize our data for ingestion into the neural network:
 
 ~~~
-data(iris)
-iris$setosa <- iris$Species=="setosa"
-iris$virginica <- iris$Species == "virginica"
-iris$versicolor <- iris$Species == "versicolor"
-iris.train.idx <- sample(x = nrow(iris), size = nrow(iris)*0.5)
-iris.train <- iris[iris.train.idx,]
-iris.valid <- iris[-iris.train.idx,]
+> data(iris)
+> iris$setosa <- iris$Species=="setosa"
+> iris$virginica <- iris$Species == "virginica"
+> iris$versicolor <- iris$Species == "versicolor"
+> iris.train.idx <- sample(x = nrow(iris), size = nrow(iris)*0.5)
+> iris.train <- iris[iris.train.idx,]
+> iris.valid <- iris[-iris.train.idx,]
 ~~~
 {: .language-r}
 
 Now lets build our neural network, to which we use a library called neuralnet:
 ~~~
-iris.net <- neuralnet(setosa+versicolor+virginica ~ 
-                      Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
-                      data=iris.train, hidden=c(10,10), rep = 5, err.fct = "ce", 
-                      linear.output = F, lifesign = "minimal", stepmax = 1000000,
-                      threshold = 0.001)
+> iris.net <- neuralnet(setosa+versicolor+virginica ~ 
+                          Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
+                          data=iris.train, hidden=c(10,10), rep = 5, err.fct = "ce", 
+                          linear.output = F, lifesign = "minimal", stepmax = 1000000,
+                          threshold = 0.001)
 ~~~
 {: .language-r}
 
@@ -105,7 +105,7 @@ iris.net <- neuralnet(setosa+versicolor+virginica ~
 
 Now lets take a look at our trained neural network:
 ~~~
-plot(iris.net, rep="best")
+> plot(iris.net, rep="best")
 ~~~
 {: .language-r}
 
@@ -117,12 +117,12 @@ plot(iris.net, rep="best")
 To look at how our model performed, there are a number of ways you could look at it. The best way is to have look at the confusion matrix and luckily in R there is a built in function that does this for us. All we have to do is pass our prediction results to the table function. Furthermore, by summing the diagonal and dividing by the length of our test set we can come up with an accuracy value. 
 
 ~~~
-iris.prediction <- compute(iris.net, iris.valid[-5:-8])
-idx <- apply(iris.prediction$net.result, 1, which.max)
-predicted <- c('setosa', 'versicolor', 'virginica')[idx]
-cm <- table(predicted, iris.valid$Species)
-accuracy <- sum(diag(cm))/length(iris.valid$Species)
-sprintf("Accuracy: %.f%%", accuracy*100)
+> iris.prediction <- compute(iris.net, iris.valid[-5:-8])
+> idx <- apply(iris.prediction$net.result, 1, which.max)
+> predicted <- c('setosa', 'versicolor', 'virginica')[idx]
+> cm <- table(predicted, iris.valid$Species)
+> accuracy <- sum(diag(cm))/length(iris.valid$Species)
+> sprintf("Accuracy: %.f%%", accuracy*100)
 ~~~
 {: .language-r}
 
