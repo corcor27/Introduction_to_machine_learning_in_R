@@ -23,11 +23,11 @@ Dimensionality reduction serves as a potent technique for analysing and visualis
 # Examine the dataset
 Lets make some plots looking at each of our features, so we can see the distribution of our features.
 ~~~
-par(mfrow = c(2, 2))
-hist(iris$Sepal.Length, breaks = 20)
-hist(iris$Sepal.Width, breaks = 20)
-hist(iris$Petal.Length, breaks = 20)
-hist(iris$Petal.Width, breaks = 20)
+> par(mfrow = c(2, 2))
+> hist(iris$Sepal.Length, breaks = 20) ## histograms for each features
+> hist(iris$Sepal.Width, breaks = 20)
+> hist(iris$Petal.Length, breaks = 20)
+> hist(iris$Petal.Width, breaks = 20)
 ~~~
 {: .language-r}
 
@@ -40,9 +40,11 @@ PCA is a technique that does rotations of data in a two dimensional array to dec
 
 ~~~
 # PCA
-pc <- prcomp(iris[,-5],center = T,scale. = T)
-pc
-summary(pc)
+# Make sure you reset your variables
+> data(iris)
+> pc <- prcomp(iris[,-5],center = T,scale. = T) ## start PCA
+> pc
+> summary(pc)
 ~~~
 {: .language-r}
 
@@ -69,8 +71,8 @@ Now lets visualise our reduced features:
 
 
 ~~~
-library(ggbiplot)
-ggbiplot(pc,obs.scale = 1, var.scale = 1, groups = iris$Species)
+> library(ggbiplot)
+> ggbiplot(pc,obs.scale = 1, var.scale = 1, groups = iris$Species) ##plot our pca results
 ~~~
 {: .language-r}
 
@@ -83,13 +85,13 @@ t-SNE is a statistical approach used to visually represent high-dimensional data
 
 ~~~
 # t-SNE embedding
-library(tsne)
-features <- subset(iris, select = -c(Species)) 
-set.seed(0)
-tsne <- tsne(features, initial_dims = 2)
-tsne <- data.frame(tsne)
-pdb <- cbind(tsne,iris$Species)
-summary(tsne)
+> library(tsne)
+> features <- subset(iris, select = -c(Species)) ### create a subset data frame without the species labels
+> set.seed(0)
+> tsne <- tsne(features, initial_dims = 2) ### lets reduce our features from 4 dimension to 2
+> tsne <- data.frame(tsne) ## put it in data frame so its easier to use
+> pdb <- cbind(tsne,iris$Species) ## add back in the labels
+> summary(tsne)
 ~~~
 {: .language-r}
 
@@ -105,8 +107,8 @@ summary(tsne)
 {: .output}
 
 ~~~
-plot(tsne, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data")
-legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
+> plot(tsne, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data") ## plot tsne
+> legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
 ~~~
 {: .language-r}
 

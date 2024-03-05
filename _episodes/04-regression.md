@@ -25,7 +25,7 @@ We now possess a basic linear model for a given dataset. It would be valuable to
 
 Any easy way to calculate our intercepts is to use least squares fit. 
 ~~~
-lsfit(iris$Petal.Length, iris$Petal.Width)$coefficients
+> lsfit(iris$Petal.Length, iris$Petal.Width)$coefficients # find linear fit intercepts
 ~~~
 {: .language-r}
 ~~~
@@ -36,9 +36,9 @@ Intercept X
 
 So now we have our intercepts, lets plot our line of best fit to our data.
 ~~~
-plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Edgar Anderson's Iris Data", xlab="Petal length", ylab="Petal width")
-abline(lsfit(iris$Petal.Length, iris$Petal.Width)$coefficients, col="black")
-legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
+> plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Edgar Anderson's Iris Data", xlab="Petal length", ylab="Petal width")
+> abline(lsfit(iris$Petal.Length, iris$Petal.Width)$coefficients, col="black") ### plot the clusters with linear line.
+> legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
 ~~~
 {: .language-r}
 
@@ -47,8 +47,8 @@ legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue"))
 
 So lets now have ago at building a linear model instead using "lm"
 ~~~
-lm_fit <- lm(Petal.Width ~ Petal.Length, data=iris)
-lm_fit$coefficients
+> lm_fit <- lm(Petal.Width ~ Petal.Length, data=iris) ## create linear model
+> lm_fit$coefficients
 ~~~
 {: .language-r}
 
@@ -61,9 +61,9 @@ lm_fit$coefficients
 Again lets plot our linear model
 
 ~~~
-plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Edgar Anderson's Iris Data", xlab="Petal length", ylab="Petal width")
-abline(lm(Petal.Width ~ Petal.Length, data=iris)$coefficients, col="black")
-legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
+> plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Edgar Anderson's Iris Data", xlab="Petal length", ylab="Petal width")
+> abline(lm(Petal.Width ~ Petal.Length, data=iris)$coefficients, col="black") ## plot linear model
+> legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue")) 
 ~~~
 {: .language-r}
 
@@ -73,9 +73,9 @@ legend("top",levels(iris$Species), pch = 21, col = c("red","green3","blue"))
 We can also look at how well our linear model fits the data by examining the p values and also have our model predict values for Petal width.
 
 ~~~
-summary(lm(Petal.Width ~ Petal.Length, data=iris))
-newdata = data.frame(Petal.Length=c(2,3,5))
-predict(lm_fit, newdata)
+> summary(lm(Petal.Width ~ Petal.Length, data=iris)) 
+> newdata = data.frame(Petal.Length=c(2,3,5)) ##create dataframe of features to predict
+> predict(lm_fit, newdata) ## predict linear model
 ~~~
 {: .language-r}
 
@@ -131,15 +131,15 @@ We’ve now seen how we can use linear regression to make a simple model and use
 This time instead of focusing on plotting, were going to use logistic regression as a classifier. First we need to prepossess our data set by splitting it into training and test data. Then we will apply logistic regression using the binomial family using the sepal length feature.
 
 ~~~
-library(caTools)
+> library(caTools)
 
-set.seed(1)
-split = sample.split(iris$Sepal.Length, SplitRatio = 0.75)
-train = subset(iris, split==TRUE)
-test = subset(iris, split==FALSE)
-y<-train$Species; x<-train$Sepal.Length
-glfit<-glm(y~x, family = 'binomial')
-summary(glfit)
+> set.seed(1)
+> split = sample.split(iris$Sepal.Length, SplitRatio = 0.75) ## create dataset split
+> train = subset(iris, split==TRUE) ## train split
+> test = subset(iris, split==FALSE) ## test split
+> y<-train$Species; x<-train$Sepal.Length ## use sepal length as features
+> glfit<-glm(y~x, family = 'binomial')
+> summary(glfit)
 ~~~
 {: .language-r}
 
@@ -170,10 +170,10 @@ summary(glfit)
 
 So we have now created our model and we want to predict some of the samples in our test set.
 ~~~
-newdata<- data.frame(x=test$Sepal.Length)
-predicted_val<-predict(glfit, newdata, type="response")
-prediction<-data.frame(test$Sepal.Length, test$Species,predicted_val)
-prediction
+> newdata<- data.frame(x=test$Sepal.Length) ## convert data into dataframe
+> predicted_val<-predict(glfit, newdata, type="response") ## predict test set
+> prediction<-data.frame(test$Sepal.Length, test$Species,predicted_val) ## cast prediction to dataframe
+> prediction
 ~~~
 {: .language-r}
 
@@ -222,7 +222,7 @@ prediction
 Looking at our results, the prediction val column give thew prediction confidence that said belongs to that class. typically in machine learning we use the 0.5 confidence threshold. Now lest have a look at what our chat looks like.
 
 ~~~
-qplot(prediction[,1], round(prediction[,3]), col=prediction[,2], xlab = 'Sepal Length', ylab = 'Prediction using Logistic Reg.')
+> qplot(prediction[,1], round(prediction[,3]), col=prediction[,2], xlab = 'Sepal Length', ylab = 'Prediction using Logistic Reg.') ## plot our predictions
 ~~~
 {: .language-r}
 

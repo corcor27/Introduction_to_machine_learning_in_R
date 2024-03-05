@@ -38,8 +38,8 @@ he K-means clustering algorithm is a straightforward technique aimed at pinpoint
 So firstly lets have a look at the features within our dataset: 
 
 ~~~
-data("iris")
-head(iris)
+> data("iris") ## load in data
+> head(iris) ## show just the first few rows
 ~~~
 {: .language-r}
 
@@ -57,8 +57,8 @@ head(iris)
 we could also compare different features, lets compare Petal length against Petal width:
 
 ~~~
-plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data")
-legend("top", levels(iris$Species), pch = 21,col = c("red","green3","blue")) 
+> plot(iris$Petal.Length, iris$Petal.Width, pch=21, bg=c("red","green3","blue")[unclass(iris$Species)], main="Iris Data") ## plot two features against each other
+> legend("top", levels(iris$Species), pch = 21,col = c("red","green3","blue")) ### well of course we want a legend
 ~~~
 {: .language-r}
 >![graph of the test regression data](../fig/standard_iris.png)
@@ -70,9 +70,9 @@ When using the kmeans function, it's essential to specify the "centers" paramete
 Now lets try and cluster all the features
 
 ~~~
-set.seed(0)
-irisCluster <- kmeans(iris[,1:4], center=3, nstart=20)
-irisCluster
+> set.seed(0)
+> irisCluster <- kmeans(iris[,1:4], center=3, nstart=20) ### take only the data columns that we want
+> irisCluster
 ~~~
 {: .language-r}
 
@@ -82,8 +82,8 @@ irisCluster
 Now lets have a look at the 3 clusters the model has come up with. To do this we use a library called “cluster”, so we can see the regions/groups that the points have been separated into.
 
 ~~~
-library(cluster)
-clusplot(iris, irisCluster$cluster, color=T, shade=T, labels=0, lines=0)
+> library(cluster)
+> clusplot(iris, irisCluster$cluster, color=T, shade=T, labels=0, lines=0) ## special kind of plot for showing clusters
 ~~~
 {: .language-r}
 
@@ -129,38 +129,38 @@ Normalized Laplacian: L_norm = I – D^(-1/2) * A * D^(-1/2), where D^(-1/2) is 
 ### Eigenvalue Decomposition
 
 Compute the eigenvalues (λ_1, λ_2, …, λ_n) and the corresponding eigenvectors (v_1, v_2, …, v_n) of the Laplacian matrix. You typically compute a few eigenvectors, corresponding to the smallest non-zero eigenvalues.
-Embedding
+
+###Embedding
 
 Use the selected eigenvectors to embed the data into a lower-dimensional space. The eigenvectors represent new features that capture the underlying structure of the data. The matrix containing these eigenvectors is referred to as the spectral embedding.
 ~~~
 ### Using Euclidean distance as a similarity measure
-similarity_matrix <- exp(-dist(iris[, 1:4])^2 / (2 * 1^2))
+> similarity_matrix <- exp(-dist(iris[, 1:4])^2 / (2 * 1^2))
  
 ### Compute Eigenvalues and Eigenvectors
-eigen_result <- eigen(similarity_matrix)
-eigenvalues <- eigen_result$values
-eigenvectors <- eigen_result$vectors
+> eigen_result <- eigen(similarity_matrix)
+> eigenvalues <- eigen_result$values
+> eigenvectors <- eigen_result$vectors
  
 ### Choose the First k Eigenvectors
-k <- 3 
-selected_eigenvectors <- eigenvectors[, 1:k]
+> k <- 3 
+> selected_eigenvectors <- eigenvectors[, 1:k]
  
 ### Apply K-Means Clustering
-cluster_assignments <- kmeans(selected_eigenvectors, centers = k)$cluster
+> cluster_assignments <- kmeans(selected_eigenvectors, centers = k)$cluster
  
 ### Add species information to the clustering results
-iris$Cluster <- factor(cluster_assignments)
-iris$Species <- as.character(iris$Species)
+> iris$Cluster <- factor(cluster_assignments)
+> iris$Species <- as.character(iris$Species)
 
 ### Plot the 
 
-library(ggplot2)
+> library(ggplot2)
 
-ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Cluster, label = Species)) +
-  geom_point() +
-  geom_text(check_overlap = TRUE, vjust = 1.5) +
-  labs(title = "Spectral Clustering with k-means of Iris Dataset",
-       x = "Sepal Length", y = "Sepal Width")
+> ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Cluster, label = Species)) + geom_point() +
+   geom_text(check_overlap = TRUE, vjust = 1.5) +
+   labs(title = "Spectral Clustering with k-means of Iris Dataset",
+        x = "Sepal Length", y = "Sepal Width")
 
 ~~~
 {: .language-r}
